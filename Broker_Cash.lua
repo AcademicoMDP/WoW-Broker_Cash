@@ -372,6 +372,7 @@ function addon:OptionsPanel_DoResetCharacters(info, value)
         self.db.char.month   = 0
         self.db.char.year    = 0
         self.db.char.ever    = 0
+        self.db.char.token   = 0
     end
 
     -- Tous les autres...
@@ -715,6 +716,8 @@ function addon:UpdateMainTooltip()
     ---------------------------------------------------------------------------
     mtt:AddLine(''); mtt:AddSeparator(); mtt:AddLine('')
     mtt:AddLine(L['Total'], GetAbsoluteMoneyString(totalMoney, showSilverAndCopper))
+    mtt:AddLine(''); mtt:AddSeparator(); mtt:AddLine('')
+    mtt:AddLine('Token Price', GetAbsoluteMoneyString(self.db.char.token, showSilverAndCopper))
 
     -- Fini
     mtt:Show()
@@ -929,6 +932,15 @@ function addon:PLAYER_ENTERING_WORLD(evt, isLogin, isReload)
 end
 
 -------------------------------------------------------------------------------
+function addon:TOKEN_MARKET_PRICE_UPDATED()
+	local price = C_WowTokenPublic.GetCurrentMarketPrice();
+
+    if (price) then
+        self.db.char.token = price
+    end
+end
+
+-------------------------------------------------------------------------------
 function addon:PLAYER_LOGOUT()
     self.db.char.lastLogout = time()
 end
@@ -979,5 +991,6 @@ function addon:OnInitialize()
 
     -- Diffère la fin de l'initialisation à PLAYER_ENTERING_WORLD
     self:RegisterEvent('PLAYER_ENTERING_WORLD')
+    self:RegisterEvent("TOKEN_MARKET_PRICE_UPDATED");
     self:RegisterEvent('PLAYER_LOGOUT')
 end
