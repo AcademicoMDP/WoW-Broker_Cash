@@ -718,6 +718,7 @@ function addon:UpdateMainTooltip()
     mtt:AddLine(L['Total'], GetAbsoluteMoneyString(totalMoney, showSilverAndCopper))
     mtt:AddLine(''); mtt:AddSeparator(); mtt:AddLine('')
     mtt:AddLine('Token Price', GetAbsoluteMoneyString(self.db.char.token, showSilverAndCopper))
+    mtt:AddLine('GuildBank', GetAbsoluteMoneyString(GetGuildBankMoney(), showSilverAndCopper))
 
     -- Fini
     mtt:Show()
@@ -952,6 +953,9 @@ function addon:OnInitialize()
     self.db   = LibStub('AceDB-3.0'):New('Broker_CashDB', sv_defaults, true)
     self.sv   = _G.Broker_CashDB    -- ou rawget(self.db, 'sv')
     self.opts = self.db.global
+
+    -- update Token Price
+    C_WowTokenPublic.UpdateMarketPrice()
 
     -- Conversion des options v1.3.3 => v1.4.0
     if self.opts.ldb.showSilver == false or self.opts.ldb.showCopper == false then
