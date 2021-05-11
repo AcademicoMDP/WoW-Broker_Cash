@@ -718,7 +718,7 @@ function addon:UpdateMainTooltip()
     mtt:AddLine(L['Total'], GetAbsoluteMoneyString(totalMoney, showSilverAndCopper))
     mtt:AddLine(''); mtt:AddSeparator(); mtt:AddLine('')
     mtt:AddLine('Token Price', GetAbsoluteMoneyString(self.db.char.token, showSilverAndCopper))
-    mtt:AddLine('GuildBank', GetAbsoluteMoneyString(GetGuildBankMoney(), showSilverAndCopper))
+    mtt:AddLine('GuildBank', GetAbsoluteMoneyString(self.db.char.GuildBank, showSilverAndCopper))
 
     -- Fini
     mtt:Show()
@@ -942,6 +942,15 @@ function addon:TOKEN_MARKET_PRICE_UPDATED()
 end
 
 -------------------------------------------------------------------------------
+function addon:GUILDBANKFRAME_OPENED()
+	local amount = GetGuildBankMoney()
+
+    if (amount) then
+        self.db.char.GuildBank = amount
+    end
+end
+
+-------------------------------------------------------------------------------
 function addon:PLAYER_LOGOUT()
     self.db.char.lastLogout = time()
 end
@@ -995,6 +1004,7 @@ function addon:OnInitialize()
 
     -- Diffère la fin de l'initialisation à PLAYER_ENTERING_WORLD
     self:RegisterEvent('PLAYER_ENTERING_WORLD')
-    self:RegisterEvent("TOKEN_MARKET_PRICE_UPDATED");
+    self:RegisterEvent('TOKEN_MARKET_PRICE_UPDATED')
+    self:RegisterEvent('GUILDBANKFRAME_OPENED')
     self:RegisterEvent('PLAYER_LOGOUT')
 end
